@@ -7,13 +7,21 @@ public class CookieGameScript : MonoBehaviour
 {
     [SerializeField] int KillCount = 0;
     [SerializeField] int MoreKillsPerKlick = 1;
-    [SerializeField] int KillsAddCost = 1;
+    [SerializeField] int KillsAddCost = 2;
+    [SerializeField] int KillsEverGotten = 0;
+    [SerializeField] int SoulCount = 0;
+    [SerializeField] public int ClicksPerSoulCount = 10;
+    [SerializeField] int Clicks = 0;
+    [SerializeField] int MaxAmountOfSouls = 100;
+
+    //[SerializeField] SkinManager skinManager;
 
     public bool EscOpen = false;
 
     public TMP_Text ShopKillsCost;
-    public TMP_Text KillsText;
+    public TMP_Text SoulText;
     public TMP_Text KillsPerClick;
+    public TMP_Text killsEverGotten;
 
 
     [SerializeField] GameObject NoKills;
@@ -22,27 +30,42 @@ public class CookieGameScript : MonoBehaviour
     [SerializeField] GameObject EscMenu;
     void Start()
     {
-        KillsText.text = "Kills:" + KillCount;
+        SoulText.text = "Souls:" + SoulCount+ "/"+ MaxAmountOfSouls;
         EscOpen = false;
+        killsEverGotten.text = "All Kills:" + KillsEverGotten;
     }
 
     public void OnKillsClick()
     {
-
         if (MoreKillsPerKlick > 1)
         {
             KillCount += MoreKillsPerKlick;
+            KillsEverGotten += MoreKillsPerKlick;
+            Clicks++;
         }
         else
         {
             KillCount++;
+            KillsEverGotten++;
+            Clicks++;
         }
-        KillsText.text = "Kills:" + KillCount;
+        SoulText.text = "Souls:" + SoulCount + "/" + MaxAmountOfSouls;
+        killsEverGotten.text = "All Kills:" + KillsEverGotten;
+
+        if (KillCount == ClicksPerSoulCount)
+        {
+            SoulCount++;
+            //Clicks = 0;
+        }
+        //if (skinManager != null)
+        //{
+        //    skinManager.CheckForSkinUnlock(KillCount);
+        //}
     }
     public void Update()
     {
-        KillsText.text = "Kills:" + KillCount;
-        ShopKillsCost.text = KillsAddCost + "Kills";
+        SoulText.text = "Souls:" + SoulCount + "/" + MaxAmountOfSouls;
+        ShopKillsCost.text = KillsAddCost + "Souls";
         KillsPerClick.text = MoreKillsPerKlick + "Kills";
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -68,22 +91,21 @@ public class CookieGameScript : MonoBehaviour
     }
     public IEnumerator BuyButton()
     {
-        if(KillCount >= KillsAddCost)
+        if(SoulCount >= KillsAddCost)
         {
-          
-            KillCount -= KillsAddCost;
+            SoulCount -= KillsAddCost;
             KillsAddCost++;
             MoreKillsPerKlick++;
-        
         }
     else
         {
-         NoKills.SetActive(true);
+            NoKills.SetActive(true);
             yield return new WaitForSeconds(1);
             NoKills.SetActive(false);
         }
-
     }
+
+
     public void BuyButton1()
     {
         StartCoroutine(BuyButton());

@@ -6,6 +6,7 @@ public class SaveAndLoad : MonoBehaviour
 
    public void SaveGame()
     {
+      //  PlayerPrefs.setFloat("Kills", GameManager.KillsAddCost); Write kill currrency idk where to find it
 
     }
 

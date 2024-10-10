@@ -52,10 +52,13 @@ public class CookieGameScript : MonoBehaviour
         SoulText.text = "Souls:" + SoulCount + "/" + MaxAmountOfSouls;
         killsEverGotten.text = "All Kills:" + KillsEverGotten;
 
-        if (KillCount == ClicksPerSoulCount)
+        if (SoulCount < MaxAmountOfSouls)
         {
-            SoulCount++;
-            //Clicks = 0;
+            if (KillCount > ClicksPerSoulCount)
+            {
+                SoulCount++;
+                KillCount = 0;
+            }
         }
         //if (skinManager != null)
         //{

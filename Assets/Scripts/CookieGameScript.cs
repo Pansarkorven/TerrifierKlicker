@@ -3,7 +3,7 @@ using TMPro;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-public class CookieGameScript : MonoBehaviour
+public class CookieGameScript    : MonoBehaviour
 {
     [SerializeField] int KillCount = 0;
     [SerializeField] int MoreKillsPerKlick = 1;
@@ -14,7 +14,7 @@ public class CookieGameScript : MonoBehaviour
     [SerializeField] int Clicks = 0;
     [SerializeField] int MaxAmountOfSouls = 100;
 
-    //[SerializeField] SkinManager skinManager;
+    [SerializeField] SkinManager skinManager;
 
     public bool EscOpen = false;
 
@@ -60,10 +60,10 @@ public class CookieGameScript : MonoBehaviour
                 KillCount = 0;
             }
         }
-        //if (skinManager != null)
-        //{
-        //    skinManager.CheckForSkinUnlock(KillCount);
-        //}
+        if (skinManager != null)
+        {
+            skinManager.CheckForSkinUnlock(KillCount);
+        }
     }
     public void Update()
     {
@@ -116,6 +116,6 @@ public class CookieGameScript : MonoBehaviour
 
     public void MainMenu()
     {
-        SceneManager.LoadScene("StartingScene");
+        SceneManager.LoadScene("MainMenu");
     }
 }

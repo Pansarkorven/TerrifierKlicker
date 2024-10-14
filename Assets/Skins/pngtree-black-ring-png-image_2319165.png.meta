@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      pngtree-black-ring-png-image_2319165_0: -6154186275158301934
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

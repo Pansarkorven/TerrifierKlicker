@@ -4,18 +4,16 @@ using System.Collections.Generic;
 public class SkinManager : MonoBehaviour
 {
     public List<int> skinUnlockThresholds = new List<int> { 100, 500, 1000, 5000, 10000 };
-    public List<GameObject> skins;
+    public List<GameObject> skinPrefabs;
 
+    private GameObject currentSkin;
     private int currentSkinIndex = 0;
 
-    
     void Start()
     {
-
-        if (skins.Count > 0)
+        if (skinPrefabs.Count > 0)
         {
-            SetActiveSkin(0); 
-            Debug.Log("Base skin (skin 0) activated at the start of the game.");
+            SpawnSkin(0);
         }
         else
         {
@@ -25,26 +23,24 @@ public class SkinManager : MonoBehaviour
 
     public void CheckForSkinUnlock(int killCount)
     {
-        Debug.Log($"Checking for skin unlock. Current kill count: {killCount}, current skin index: {currentSkinIndex}");
-
         if (currentSkinIndex < skinUnlockThresholds.Count && killCount >= skinUnlockThresholds[currentSkinIndex])
         {
-            Debug.Log($"Unlocking skin. Kill count ({killCount}) has reached the threshold for skin index {currentSkinIndex}.");
             UnlockNextSkin();
-        }
-        else
-        {
-            Debug.Log($"No skin to unlock yet. Next unlock at {skinUnlockThresholds[currentSkinIndex]} kills.");
         }
     }
 
     private void UnlockNextSkin()
     {
         currentSkinIndex++;
-        if (currentSkinIndex < skins.Count)
+
+        if (currentSkinIndex < skinPrefabs.Count)
         {
-            Debug.Log($"Unlocking next skin. Setting skin index {currentSkinIndex} active.");
-            SetActiveSkin(currentSkinIndex);
+            if (currentSkin != null)
+            {
+                Destroy(currentSkin);
+            }
+
+            SpawnSkin(currentSkinIndex);
         }
         else
         {
@@ -52,18 +48,8 @@ public class SkinManager : MonoBehaviour
         }
     }
 
-    private void SetActiveSkin(int index)
+    private void SpawnSkin(int index)
     {
-        Debug.Log($"Activating skin index: {index}");
-
-        for (int i = 0; i < skins.Count; i++)
-        {
-            bool isActive = (i == index);
-            skins[i].SetActive(isActive);
-
-            Debug.Log($"Skin {i} active: {isActive}");
-        }
-
-        Debug.Log($"Skin {index} has been set active.");
+        currentSkin = Instantiate(skinPrefabs[index], transform.position, transform.rotation);
     }
 }

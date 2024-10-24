@@ -1,55 +1,68 @@
 using UnityEngine;
-using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class SkinManager : MonoBehaviour
 {
-    public List<int> skinUnlockThresholds = new List<int> { 100, 500, 1000, 5000, 10000 };
-    public List<GameObject> skinPrefabs;
+    public Sprite skin0;    // Skin for 0 kills
+    public Sprite skin100;  // Skin for 100 kills
+    public Sprite skin500;  // Skin for 500 kills
+    public Sprite skin1000; // Skin for 1000 kills
+    public Image skinImage; // The UI Image to display the skin
 
-    private GameObject currentSkin;
-    private int currentSkinIndex = 0;
+    private int currentSkinLevel = 0;  // Tracks the current skin level (0 = skin0, 1 = skin100, 2 = skin500, 3 = skin1000)
 
     void Start()
     {
-        if (skinPrefabs.Count > 0)
+        // Initially, show the default skin for 0 kills
+        if (skinImage != null)
         {
-            SpawnSkin(0);
+            skinImage.sprite = skin0; // Display the initial skin for 0 kills
         }
         else
         {
-            Debug.LogWarning("No skins are assigned to the SkinManager.");
+            Debug.LogWarning("SkinManager: Skin Image component is not assigned.");
         }
     }
 
-    public void CheckForSkinUnlock(int killCount)
+    // This method is called from the CookieGameScript, passing in the player's total kills (KillsEverGotten)
+    public void CheckForSkinUnlock(int killsEverGotten)
     {
-        if (currentSkinIndex < skinUnlockThresholds.Count && killCount >= skinUnlockThresholds[currentSkinIndex])
+        // Log the current kills for debugging
+        Debug.Log("SkinManager: Checking for skin unlock. KillsEverGotten: " + killsEverGotten);
+
+        // Check for specific kill thresholds and assign the corresponding skin only if a new threshold is reached
+        if (killsEverGotten >= 1000 && currentSkinLevel < 3)
         {
-            UnlockNextSkin();
+            UnlockSkin(skin1000); // Show skin for 1000 kills
+            currentSkinLevel = 3; // Update the current skin level to 3
+        }
+        else if (killsEverGotten >= 500 && currentSkinLevel < 2)
+        {
+            UnlockSkin(skin500); // Show skin for 500 kills
+            currentSkinLevel = 2; // Update the current skin level to 2
+        }
+        else if (killsEverGotten >= 100 && currentSkinLevel < 1)
+        {
+            UnlockSkin(skin100); // Show skin for 100 kills
+            currentSkinLevel = 1; // Update the current skin level to 1
+        }
+        else if (killsEverGotten < 100 && currentSkinLevel == 0)
+        {
+            UnlockSkin(skin0); // Show skin for 0 kills if no thresholds have been reached
         }
     }
 
-    private void UnlockNextSkin()
+    // Method to assign the skin sprite to the Image component
+    private void UnlockSkin(Sprite skin)
     {
-        currentSkinIndex++;
-
-        if (currentSkinIndex < skinPrefabs.Count)
+        if (skin != null && skinImage != null)
         {
-            if (currentSkin != null)
-            {
-                Destroy(currentSkin);
-            }
-
-            SpawnSkin(currentSkinIndex);
+            skinImage.sprite = skin; // Update the skin image to the passed sprite
+            Debug.Log("SkinManager: Skin updated to: " + skin.name);
         }
         else
         {
-            Debug.LogWarning("No more skins to unlock. All skins have been unlocked.");
+            Debug.LogError("SkinManager: Invalid skin or skinImage not assigned.");
         }
-    }
-
-    private void SpawnSkin(int index)
-    {
-        currentSkin = Instantiate(skinPrefabs[index], transform.position, transform.rotation);
     }
 }

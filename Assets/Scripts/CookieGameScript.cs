@@ -37,34 +37,30 @@ public class CookieGameScript    : MonoBehaviour
 
     public void OnKillsClick()
     {
-        if (MoreKillsPerKlick > 1)
-        {
-            KillCount += MoreKillsPerKlick;
-            KillsEverGotten += MoreKillsPerKlick;
-            Clicks++;
-        }
-        else
-        {
-            KillCount++;
-            KillsEverGotten++;
-            Clicks++;
-        }
+        KillCount += MoreKillsPerKlick;
+        KillsEverGotten += MoreKillsPerKlick;  // This stores the total kills, never reset
+        Clicks++;
+
         SoulText.text = "Souls:" + SoulCount + "/" + MaxAmountOfSouls;
         killsEverGotten.text = "All Kills:" + KillsEverGotten;
 
+        // Manage Soul count separately without resetting KillCount entirely
         if (SoulCount < MaxAmountOfSouls)
         {
-            if (KillCount > ClicksPerSoulCount)
+            if (KillCount >= ClicksPerSoulCount)
             {
                 SoulCount++;
-                KillCount = 0;
+                KillCount = 0;  // resets for soul count
             }
         }
+
+        
         if (skinManager != null)
         {
-            skinManager.CheckForSkinUnlock(KillCount);
+            skinManager.CheckForSkinUnlock(KillsEverGotten); 
         }
     }
+
     public void Update()
     {
         SoulText.text = "Souls:" + SoulCount + "/" + MaxAmountOfSouls;

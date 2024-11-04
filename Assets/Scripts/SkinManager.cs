@@ -1,46 +1,52 @@
 using UnityEngine;
-using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class SkinManager : MonoBehaviour
 {
-   
-    public List<int> skinUnlockThresholds = new List<int> { 100, 500, 1000, 5000, 10000 };
+    public Sprite skin0;
+    public Sprite skin100;
+    public Sprite skin500;
+    public Sprite skin1000;
+    public Image skinImage;
 
-    
-    public List<GameObject> skins;
+    private int currentSkinLevel = -1;
 
-    private int currentSkinIndex = 0; 
-
-    
-    public void CheckForSkinUnlock(int killCount)
+    void Start()
     {
-        if (currentSkinIndex < skinUnlockThresholds.Count && killCount >= skinUnlockThresholds[currentSkinIndex])
+
+    }
+
+    
+    public void CheckForSkinUnlock(int killsEverGotten)
+    {
+        
+        if (killsEverGotten >= 1000 && currentSkinLevel < 3)
         {
-            UnlockNextSkin();
+            UnlockSkin(skin1000, 3); 
+        }
+        else if (killsEverGotten >= 500 && currentSkinLevel < 2)
+        {
+            UnlockSkin(skin500, 2); 
+        }
+        else if (killsEverGotten >= 100 && currentSkinLevel < 1)
+        {
+            UnlockSkin(skin100, 1); 
+        }
+        else if (killsEverGotten < 100 && currentSkinLevel != 0)
+        {
+            UnlockSkin(skin0, 0); 
         }
     }
 
     
-    private void UnlockNextSkin()
+    private void UnlockSkin(Sprite skin, int newSkinLevel)
     {
-        currentSkinIndex++;
-        if (currentSkinIndex < skins.Count)
+        if (skin != null && skinImage != null)
         {
-            SetActiveSkin(currentSkinIndex);
+            skinImage.sprite = skin;
+            currentSkinLevel = newSkinLevel; 
+            
         }
-        else
-        {
-            Debug.LogWarning("No more skins to unlock!");
-        }
-    }
 
-    
-    private void SetActiveSkin(int index)
-    {
-        for (int i = 0; i < skins.Count; i++)
-        {
-            skins[i].SetActive(i == index);
-        }
-        Debug.Log($"Unlocked new skin: {index}");
     }
 }
